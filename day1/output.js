@@ -5,11 +5,11 @@ const depths = fs.readFileSync(`${__dirname}/input.txt`).toString().split("\n");
 console.log(depths.slice(-10, -1));
 
 const rateOfIncrease = (depths) => {
-  console.log(depths);
+  console.log("depths: ", depths);
   const areLarger = depths
     .map((x) => parseInt(x))
     .map((currentDepth, index) => depths[index - 1] < currentDepth);
-  console.log(areLarger);
+  console.log("areLarger", areLarger);
 
   const count = areLarger.reduce((acc, curr) => {
     if (curr) {
@@ -20,6 +20,22 @@ const rateOfIncrease = (depths) => {
   return count;
 };
 
-console.log("The answer is: ", rateOfIncrease(depths));
+const rateOfIncreaseWindow = (depths) => {
+  console.log("depths: ", depths);
+  const window = 3;
+  const reducer = (acc, curr) => acc + curr;
 
-module.exports = { rateOfIncrease };
+  const depthsWindowed = depths
+    .map((x) => parseInt(x))
+    .map((depth, index, depthsInts) => {
+      return depthsInts.slice(index, index + window).reduce(reducer, 0);
+    });
+
+  console.log("depthsWindowed: ", depthsWindowed);
+
+  return rateOfIncrease(depthsWindowed);
+};
+
+console.log("The answer is: ", rateOfIncreaseWindow(depths));
+
+module.exports = { rateOfIncrease, rateOfIncreaseWindow };
